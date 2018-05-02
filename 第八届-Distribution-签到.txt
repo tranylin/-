@@ -1,0 +1,51 @@
+#include <iostream>
+#include <stdio.h>
+#include <set>
+#include <map>
+#include <vector>
+#include <stack>
+#include <algorithm>
+#include <string.h>
+#include <string>
+#include <functional>
+using namespace std;
+#define INF 123412341
+#define ll long long
+int N,M,K,T,S,D;
+
+struct data
+{
+    int x;
+    int y;
+};
+
+int main()
+{
+    int a,b;
+    while(cin>>N>>M)
+    {
+        int s1=0,s2=0;
+        vector<struct data> cun;
+        vector<struct data> shi;
+        for(int i=1;i<=N;i++)
+        {
+            cin>>a>>b;
+            cun.push_back({a,b});
+        }
+        for(int j=1;j<=M;j++)
+        {
+            cin>>a>>b;
+            s1=0;
+            s2=0;
+            for(int i=0;i<cun.size();i++)
+            {
+                int x=cun[i].x;
+                int y=cun[i].y;
+                if((x<a&&y<b)||(x>a&&y>b))s1++;
+                else s2++;
+            }
+            cout<<s1-s2<<endl;
+        }
+    }
+	return 0;
+}

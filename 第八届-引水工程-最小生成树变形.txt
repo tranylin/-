@@ -1,0 +1,76 @@
+/*
+构建一个新的超级点，超级点自建水库有水源且自身不花费，让这个点和原来的N个点相连
+，相连表示超级点向这些点管道送水，花费为原来那些点自建水库的花费。问题转化为求由超级点自建水库最小生成树
+原来的N个点之间两两相连，构成完全图，因为有超级点供应水源，这些点之间都应该连
+*/
+
+#include <iostream>
+#include <stdio.h>
+#include <set>
+#include <vector>
+#include <stack>
+#include <algorithm>
+#include <string.h>
+#include <string>
+#include <functional>
+#include <math.h>
+using namespace std;
+#define INF 1234123412
+#define ll long long
+int N,M,K,T;
+int cost[303][303];
+int mincost[303];
+int self[303];
+bool used[303];
+int prim()
+{
+    for(int i=1;i<=N;i++)
+    {
+        mincost[i]=INF;
+        used[i]=false;
+    }
+    mincost[1]=0;
+    int res=0;
+    while(1)
+    {
+        int v=-1;
+        for(int u=1;u<=N;u++)
+        {
+            if(!used[u]&&(v==-1||mincost[u]<mincost[v]))v=u;
+        }
+        if(v==-1)break;
+        used[v]=true;
+        res+=mincost[v];
+        for(int u=1;u<=N;u++)
+        {
+            mincost[u]=min(mincost[u],cost[v][u]);
+        }
+    }
+    return res;
+}
+
+int main()
+{
+    scanf("%d",&T);
+    for(int t=1;t<=T;t++)
+    {
+        scanf("%d",&N);
+        for(int i=1;i<=N;i++)
+            scanf("%d",&self[i]);
+        for(int i=1;i<=N;i++)
+        {
+            for(int j=1;j<=N;j++)
+            {
+                scanf("%d",&cost[i][j]);
+            }
+        }
+        for(int i=1;i<=N;i++)
+        {
+            cost[i][N+1]=cost[N+1][i]=self[i];
+        }
+        N++;
+        int qq=prim();
+        printf("%d\n",qq);
+    }
+	return 0;
+}

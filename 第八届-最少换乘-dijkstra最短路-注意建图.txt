@@ -1,0 +1,100 @@
+/*
+注意建立图
+输入的每条单向线路如 1 3 5 7
+建图时连边要连 1-3  1-5 1-7  2-5 3-7  5-7
+*/
+
+
+#include <iostream>
+#include <stdio.h>
+#include <set>
+#include <vector>
+#include <stack>
+#include <algorithm>
+#include <string.h>
+#include <sstream>
+#include <string>
+#include <functional>
+#include <math.h>
+using namespace std;
+#define INF 1234123412
+#define ll long long
+int N,M,K,T;
+int cost[503][503];
+int mincost[503];
+int self[503];
+bool used[503];
+void dijkstra()
+{
+    for(int i=1;i<=N;i++)
+    {
+        mincost[i]=INF;
+        used[i]=false;
+    }
+    mincost[1]=0;
+    while(1)
+    {
+        int v=-1;
+        for(int u=1;u<=N;u++)
+        {
+            if(!used[u]&&(v==-1||mincost[u]<mincost[v]))v=u;
+        }
+        if(v==-1)break;
+        used[v]=true;
+        for(int u=1;u<=N;u++)
+        {
+           if(cost[v][u]!=INF&&mincost[u]>mincost[v]+cost[v][u])
+           {
+               mincost[u]=mincost[v]+cost[v][u];
+           }
+
+        }
+    }
+}
+
+int main()
+{
+    scanf("%d",&T);
+    int x;
+    for(int t=1;t<=T;t++)
+    {
+        scanf("%d%d",&M,&N);
+        if(N==1)
+        {
+            cout<<0<<endl;
+            continue;
+        }
+        for(int i=1;i<=N;i++)
+        {
+            for(int j=1;j<=N;j++)
+            {
+                cost[i][j]=INF;
+            }
+        }
+        string sr;
+        stack<int> qq;
+        getchar();
+        for(int i=1;i<=M;i++)
+        {
+            getline(cin,sr);
+            stringstream stream;
+            stream<<sr;
+            int cnt=0;
+            while(stream>>x)
+            {
+                self[++cnt]=x;
+            }
+            for(int k=1;k<=cnt;k++)
+            {
+                for(int j=k+1;j<=cnt;j++)
+                {
+                    cost[self[k]][self[j]]=1;
+                }
+            }
+        }
+        dijkstra();
+        if(mincost[N]!=INF)printf("%d\n",mincost[N]-1);
+        else printf("NO\n");
+    }
+	return 0;
+}

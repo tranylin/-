@@ -1,0 +1,89 @@
+#include <iostream>
+#include <stdio.h>
+#include <set>
+#include <vector>
+#include <stack>
+#include <algorithm>
+#include <string.h>
+#include <string>
+#include <functional>
+#include <math.h>
+using namespace std;
+#define INF 1234123412
+#define ll long long
+int N,M,K,T;
+int dp[505][505];
+int color[505][505];
+int shu[250010];
+int tag;
+int dx[8]={-1,-1,-1,0,1,1, 1, 0};
+int dy[8]={-1, 0, 1,1,1,0,-1,-1};
+void dfs(int nx,int ny)
+{
+    color[nx][ny]=tag;
+    shu[tag]++;
+    for(int i=0;i<8;i++)
+    {
+        int tx=nx+dx[i];
+        int ty=ny+dy[i];
+        if(tx>=1&&tx<=N&&ty>=1&&ty<=M&&dp[tx][ty]==dp[nx][ny]&&color[tx][ty]==-1)
+        {
+            dfs(tx,ty);
+        }
+    }
+
+}
+
+int main()
+{
+    while(scanf("%d%d%d",&N,&M,&T)!=EOF)
+    {
+        string sr;
+        getchar();
+        bool sub=false;
+        memset(shu,0,sizeof(shu));
+        for(int i=1;i<=N;i++)
+            for(int j=1;j<=M;j++)
+                color[i][j]=-1;
+        for(int i=1;i<=N;i++)
+        {
+            getline(cin,sr);
+            int len=sr.length();
+            int cnt=0;
+            for(int j=0;j<len;j++)
+            {
+                if(sr[j]=='0')
+                {
+                    dp[i][++cnt]=0;
+                    sub=true;
+                }
+                else if(sr[j]=='1')
+                {
+                    dp[i][++cnt]=1;
+                }
+            }
+        }
+        tag=1;
+        int sign=-1;
+        for(int i=1;i<=N;i++)
+        {
+            for(int j=1;j<=M;j++)
+            {
+                if(color[i][j]!=-1)continue;
+                if(dp[i][j]==0)sign=tag;
+                dfs(i,j);
+                tag++;
+            }
+        }
+        int ans=0;
+        for(int i=1;i<=tag;i++)
+        {
+            if(i!=sign&&shu[i]>ans)
+                ans=shu[i];
+        }
+        ll res=(long long)ans*(long long)T;
+        if(sub)tag--;//染色时如果有0被染色，减去这个情况
+        cout<<tag-1<<" "<<res<<endl;
+    }
+	return 0;
+}

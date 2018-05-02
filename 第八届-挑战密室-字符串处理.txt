@@ -1,0 +1,138 @@
+#include <iostream>
+#include <stdio.h>
+#include <set>
+#include <vector>
+#include <stack>
+#include <map>
+#include <algorithm>
+#include <string.h>
+#include <sstream>
+#include <string>
+#include <functional>
+#include <math.h>
+using namespace std;
+#define INF 1234123412
+#define ll long long
+int N, M, K, T;
+int st[5010];
+map<string, int> qwq;
+int main()
+{
+	qwq["N"] = 14;
+	qwq["C"] = 12;
+	qwq["O"] = 16;
+	qwq["Cl"] = 35;
+	qwq["S"] = 32;
+	qwq["H"] = 2;
+	qwq["Al"] = 27;
+	qwq["Ca"] = 40;
+	qwq["Zn"] = 65;
+	qwq["Na"] = 23;
+	string sr;
+	scanf("%d", &T);
+	for (int t = 1;t <= T;t++)
+	{
+		cin >> sr;
+		int len = sr.length();
+		int k, sta = INF, over = len;
+		for (k = 0;k<len;k++)
+		{
+			if (sr[k] == '=')sta = k;
+			if (sr[k] == '+'&&k>sta)
+			{
+				over = k;
+				break;
+			}
+		}
+		string s = "";
+		for (int j = sta + 1;j<over;j++)
+		{
+			s = s + sr[j];
+		}
+		int mul = 1;
+		int now = 0;
+		int chang = s.length();
+		int shu = 0;
+		while (s[now] >= '0'&&s[now] <= '9')
+		{
+			shu = shu * 10 + (s[now] - '0');
+			now++;
+		}
+		if (shu>0)mul = shu;
+		shu = 0;
+		int ans = 0;
+		int cnt = 0;
+		while (now<chang)
+		{
+			if (s[now] >= 'A'&&s[now] <= 'Z')
+			{
+				if (now + 1<chang&&s[now + 1] >= 'a'&&s[now + 1] <= 'z')
+				{
+					string tem = "";
+					tem = tem + s[now];
+					tem = tem + s[now + 1];
+					st[++cnt] = qwq[tem];
+					now += 2;
+				}
+				else if (now + 1<chang&&s[now + 1] >= '0'&&s[now + 1] <= '9')
+				{
+					string ss = "";
+					ss = ss + s[now];
+					st[++cnt] = qwq[ss];
+					now += 1;
+					shu = 0;
+					while (now<chang&&s[now] >= '0'&&s[now] <= '9')
+					{
+						shu = shu * 10 + (s[now] - '0');
+						now++;
+					}
+					st[cnt] = st[cnt] * shu;
+				}
+				else
+				{
+					string ss = "";
+					ss = ss + s[now];
+					st[++cnt] = qwq[ss];
+					now++;
+				}
+			}
+			else if (s[now] >= '0'&&s[now] <= '9')
+			{
+				int path = now;
+				shu = 0;
+				while (path<chang&&s[path] >= '0'&&s[path] <= '9')
+				{
+					shu = shu * 10 + (s[path] - '0');
+					path++;
+				}
+				if (s[now - 1] != ')')
+				{
+					st[cnt] *= shu;
+				}
+				else
+				{
+					int tmp = cnt - 1;
+					while (st[tmp] != 0)
+					{
+						st[tmp] *= shu;
+						tmp--;
+					}
+				}
+				now = path;
+			}
+			else if (s[now] == '(' || s[now] == ')')
+			{
+				st[++cnt] = 0;
+				now++;
+			}
+		}
+		for (int i = 1;i <= cnt;i++)
+		{
+			ans += st[i];
+		}
+		ans *= mul;
+		printf("%04d\n", ans);
+
+	}
+	return 0;
+}
