@@ -1,0 +1,100 @@
+#include <iostream>
+#include <stdio.h>
+#include <set>
+#include <map>
+#include <vector>
+#include <stack>
+#include <algorithm>
+#include <string.h>
+#include <string>
+#include <functional>
+using namespace std;
+#define INF 123412341
+
+int main()
+{
+    string s;
+    while(getline(cin,s))
+    {
+        set<int> pre[110];
+        stack<int> qaq[110];
+        stack<char> qwq;
+        vector<int> ans;
+        set<int>qsq;
+        int len=s.length();
+
+        int cnt=0;
+        int shu=0;
+        int leiji=0;
+        int i=1;
+        while(s[i]>='0'&&s[i]<='9')
+        {
+            leiji=leiji*10+(s[i]-'0');
+            i++;
+        }
+        qaq[0].push(leiji);
+        qwq.push('(');
+        qsq.insert(leiji);
+        while(i<len)
+        {
+            if(s[i]=='(')
+            {
+                qwq.push('(');
+                i++;
+                cnt++;
+            }
+            else if(s[i]==')')
+            {
+                if(qwq.size()==1)break;
+                qwq.pop();
+                int fat=qaq[cnt-1].top();
+                while(!qaq[cnt].empty())
+                {
+                    int t=qaq[cnt].top();
+                    pre[t].insert(fat);
+                    pre[fat].insert(t);
+                    qaq[cnt].pop();
+                }
+                i++;
+                cnt--;
+            }
+            else if(s[i]==' '){i++;}
+            else
+            {
+                leiji=0;
+                while(s[i]>='0'&&s[i]<='9')
+                {
+                    leiji=leiji*10+(s[i]-'0');
+                    i++;
+                }
+                qaq[cnt].push(leiji);
+                qsq.insert(leiji);
+            }
+        }
+        while(qsq.size()!=1)
+        {
+            set<int>::iterator it=qsq.begin();
+            int x=INF;
+            while(it!=qsq.end())
+            {
+                if(pre[*it].size()==1&&*it<x)x=*it;
+                it++;
+            }
+            set<int>::iterator iter=pre[x].begin();
+            pre[*iter].erase(x);
+            qsq.erase(x);
+            ans.push_back(*iter);
+            pre[x].clear();
+        }
+        if(ans.size()==0)cout<<"0"<<endl;
+        else
+        {
+            cout<<ans[0];
+            for(int i=1;i<ans.size();i++)
+            {
+                cout<<" "<<ans[i];
+            }
+            cout<<endl;
+        }
+    }
+}

@@ -1,0 +1,61 @@
+
+
+/*
+题目询问的并不是任意两点间最短路径，而是两点之间所有可能的路线中出现的危险值中最大的的最小值
+a和b之间有k条路径，求 每条路径中两点间危险值中最大的，从这k个路径中各自出现的最大危险值中选最小的
+*/
+
+#include <iostream>
+#include <stdio.h>
+#include <algorithm>
+#include <vector>
+#include <string.h>
+#include <map>
+#include <set>
+using namespace std;
+#define INF 123412412
+#define maxn 40020
+int T,N,M,K;
+int dp[105][105];
+int main()
+{
+    int x,y,c;
+    for(int i=1;i<=100;i++)
+    {
+        for(int j=1;j<=100;j++)
+        {
+            if(i==j)dp[i][j]=0;
+            else dp[i][j]=INF;
+        }
+    }
+    scanf("%d%d",&N,&M);
+    for(int i=1;i<=M;i++)
+    {
+        scanf("%d%d%d",&x,&y,&c);
+        dp[x][y]=c;dp[y][x]=c;
+    }
+    for(int k=1;k<=N;k++)
+    {
+        for(int i=1;i<=N;i++)
+        {
+            for(int j=1;j<=N;j++)
+            {
+                dp[i][j]=min(dp[i][j],max(dp[i][k],dp[k][j]));
+            }
+        }
+    }
+    scanf("%d",&K);
+    for(int i=1;i<=K;i++)
+    {
+        scanf("%d%d",&x,&y);
+        if(dp[x][y]==INF)
+        {
+            printf("-1\n");
+        }
+        else
+        {
+            printf("%d\n",dp[x][y]);
+        }
+    }
+    return 0;
+}

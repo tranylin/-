@@ -1,0 +1,89 @@
+#include <iostream>
+#include <stdio.h>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+#define INF 1234123412
+int a[505];
+int b[505];
+int dp[505][505];
+int N,M,K;
+
+bool com(int a,int b)
+{
+    return a>b;
+}
+
+int abs(int a)
+{
+    if(a<0)return -a;
+    else return a;
+}
+
+int main()
+{
+    scanf("%d",&K);
+    for(int k=0;k<K;k++)
+    {
+        int ans1=INF;
+        int ans2=INF;
+        scanf("%d",&N);
+        for(int i=1;i<=N;i++)
+        {
+            scanf("%d",&a[i]);
+            b[i]=a[i];
+        }
+        memset(dp,0,sizeof(dp));
+        //先按照升序找一遍
+        sort(a+1,a+N+1);
+        for(int j=1;j<=N;j++)//第一个数字修成第j种高度的花费
+        {
+            dp[1][j]=abs(b[1]-a[j]);
+        }
+        for(int i=2;i<=N;i++)
+        {
+            int maxnn=INF;
+            for(int j=1;j<=N;j++)
+            {
+                dp[i][j]=abs(b[i]-a[j]);//在第i段路尝试修成第j种高度时，
+                maxnn=min(dp[i-1][j],maxnn);//第i-1段路之前已经尝试了修成第1,2,...j种高度,从其中选择花费最小的加到dp[i][j]上
+                if(maxnn!=INF)
+                {
+                    dp[i][j]=dp[i][j]+maxnn;
+                }
+            }
+        }
+        for(int j=1;j<=N;j++)
+        {
+            ans1=min(dp[N][j],ans1);
+        }
+
+        //按照降序序列找一遍
+        sort(a+1,a+N+1,com);
+        memset(dp,0,sizeof(dp));
+        for(int j=1;j<=N;j++)//第一个数字修成第j种高度的花费
+        {
+            dp[1][j]=abs(b[1]-a[j]);
+        }
+        for(int i=2;i<=N;i++)
+        {
+            int maxn=INF;
+            for(int j=1;j<=N;j++)
+            {
+                dp[i][j]=abs(b[i]-a[j]);//在第i段路尝试修成第j种高度时，
+                maxn=min(dp[i-1][j],maxn);//第i-1段路之前已经尝试了修成第1,2,...j种高度,从其中选择花费最小的加到dp[i][j]上
+                if(maxn!=INF)
+                {
+                    dp[i][j]=dp[i][j]+maxn;
+                }
+            }
+        }
+        for(int j=1;j<=N;j++)
+        {
+            ans2=min(dp[N][j],ans1);
+        }
+
+        printf("%d\n",min(ans1,ans2));
+    }
+    return 0;
+}

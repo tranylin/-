@@ -1,0 +1,69 @@
+#include <iostream>
+#include <stdio.h>
+#include <algorithm>
+#include <vector>
+#include <string.h>
+#include <map>
+#include <set>
+using namespace std;
+#define maxn 40020
+int T,N,M,K;
+int dp[105];//d先对所有矩形排序，dp[i]是使用前i个矩形能得到的最多嵌套数
+struct data
+{
+    int a,b;
+};
+struct data qq[110];
+
+bool com(struct data x1,struct data x2)
+{
+    if(x1.a<x2.a)
+    {
+        return true;
+    }
+    else if(x1.a==x2.a)
+    {
+        return x1.b<x2.b;
+    }
+    else return false;
+}
+
+int main()
+{
+    scanf("%d",&T);
+    int x,y;
+    int ans;
+    for(int t=1;t<=T;t++)
+    {
+        ans=-1;
+        scanf("%d",&N);
+        for(int i=1;i<=N;i++)
+        {
+            scanf("%d%d",&x,&y);
+            if(x<=y){qq[i].a=x;qq[i].b=y;}
+            else {qq[i].a=y;qq[i].b=x;}
+        }
+        sort(qq+1,qq+N+1,com);
+        memset(dp,0,sizeof(dp));
+        for(int i=1;i<=N;i++)
+        {
+            for(int j=1;j<i;j++)
+            {
+                if(qq[i].a==qq[j].a&&qq[i].b==qq[j].b)
+                {
+                    ;
+                }
+                else
+                {
+                    if(qq[i].a>=qq[j].a&&qq[i].b>=qq[j].b&&dp[i]<=dp[j])
+                    {
+                        dp[i]=dp[j]+1;
+                    }
+                    ans=max(ans,dp[i]);
+                }
+            }
+        }
+        printf("%d\n",ans+1);
+     }
+    return 0;
+}

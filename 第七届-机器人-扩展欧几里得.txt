@@ -1,0 +1,102 @@
+/**
+
+题中给出的八个方向其实可以看作四个,(x,y)  (x,-y)  (y,x)  (y,-x)  对这四个坐标取反就是另外四个
+
+形成(S,T)就是上面几种坐标的累加，假设取了a1(x,y),a2(x,-y),a3(y,x),a4(y,-x)
+
+(a1+a2)x + (a3+a4)y= S =Ax+ By
+(a3-a4)x + (a1-a2)y= T =Cx +Dy
+
+先用扩展欧几里得求一下 Ax+By=gcd(x,y)  求出一组 A,B
+x,y公约数设为g
+
+如果同时为S和T是g的倍数 才有解
+而且 A+D和B+C一定是偶数
+
+对于两个等式的解分别在A B 和 C D两组解尝试比他们小或者大的最近两组解
+
+
+
+
+
+**/
+
+
+#include <iostream>
+#include <stdio.h>
+#include <set>
+#include <map>
+#include <vector>
+#include <stack>
+#include <algorithm>
+#include <string.h>
+#include <string>
+#include <functional>
+using namespace std;
+#define INF 123412341
+#define ll long long
+void ex_gcd(ll a, ll b, ll &x, ll &y, ll &d)
+{
+	if (b == 0)
+	{
+		d = a;
+		x = 1;
+		y = 0;
+	}
+	else
+	{
+		ex_gcd(b, a%b, y, x, d);
+		y -= x*(a / b);
+	}
+}
+int main()
+{
+	int K;
+	ll a, b, s, t,g;
+	ll x, y, d, d2;
+	ll A, B, C, D;
+	scanf("%d", &K);
+	for (int k = 1;k <= K;k++)
+	{
+		scanf("%lld%lld%lld%lld", &a, &b, &s, &t);
+		if (a == 0 && b == 0)
+		{
+			if (s == 0 && t == 0)cout << "Y" << endl;
+			else cout << "N" << endl;
+			continue;
+		}
+		ex_gcd(a, b, A, B, g);
+		C = A;D = B;
+		if (s%g == 0 && t%g == 0)
+		{
+			bool sign = false;
+			ll i;
+			ll j;
+			ll tA, tB, tC, tD;
+			A = A*(s / g);
+			B = B*(s / g);
+			C = C*(t / g);
+			D = D*(t / g);
+			for (i = -2;i <= 2;i++)
+			{
+				tA = A + b / g*i;
+				tB = B - a / g*i;
+				for (j = -2;j <= 2;j++)
+				{
+					tC= C + b / g*j;
+					tD= D - a / g*j;
+
+					if ((tA + tD) % 2 == 0 && (tB + tC) % 2 == 0)
+					{
+						sign = true;
+						break;
+					}
+				}
+			}
+			if (sign)printf("Y\n");
+			else printf("N\n");
+		}
+		else printf("N\n");
+	}
+	return 0;
+}

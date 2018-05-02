@@ -1,0 +1,58 @@
+#include <iostream>
+#include <stdio.h>
+#include <algorithm>
+#include <string.h>
+#include <map>
+#include <sstream>
+using namespace std;
+#define maxn 10010
+
+int main()
+{
+	string sr;
+	string x1, x2, x3;
+	int y1, y2, y3;
+	while (cin >> sr)
+	{
+		if (sr == "0+0=0")
+		{
+			break;
+		}
+		y1 = 0;y2 = 0;y3 = 0;
+		int len = sr.length();
+		int i, j, k;
+		x3 = "";
+		for (j = len - 1;j >= 0;j--)
+		{
+			if (sr[j] == '=')break;
+			x3 = x3 + sr[j];
+		}
+		x2 = "";
+		for (k = j - 1;k >= 0;k--)
+		{
+			if (sr[k] == '+')break;
+			x2 = x2 + sr[k];
+		}
+		x1 = "";
+		for (i = k - 1;i >= 0;i--)
+		{
+			x1 = x1 + sr[i];
+		}
+		stringstream stream;
+		stream << x3;
+		stream >> y3;
+		stream.clear();
+		stream.str("");
+		stream << x2;
+		stream >> y2;
+		stream.clear();
+		stream.str("");
+		stream << x1;
+		stream >> y1;
+		stream.clear();
+		stream.str("");
+		if (y1 + y2 == y3)cout << "TRUE" << endl;
+		else cout << "FALSE" << endl;
+	}
+	return 0;
+}
