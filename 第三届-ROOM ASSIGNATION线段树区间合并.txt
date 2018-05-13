@@ -1,0 +1,111 @@
+#include<cstdio>
+#include <algorithm>
+#include <string>
+#include <string.h>
+#include <map>
+#include<iostream>
+using namespace std;
+#define ll long long
+#define INF 1234123412
+#define MX 110000
+int K, E, N, M, T;
+//sum[i]表示的是i所处的区间L-R中最长连续空房长度
+//lsum[i]表示的是i所处的区间中以左端L开始连续空房长度
+//rsum[i]表示i所处的区间中以右端R结尾的连续空房长度
+int sum[MX << 2], lsum[MX << 2], rsum[MX << 2];
+int lazy[MX << 2];
+
+void up(int rt, int m)
+{
+	lsum[rt] = lsum[rt << 1];//该区间左端点开头的连续长度先赋值为其左子树的左端点开头的连续长度
+	rsum[rt] = rsum[rt << 1 | 1];//该区间右端点结尾的连续长度先赋值为其右子树的右端点结尾的连续长度
+	if (lsum[rt] == m - (m >> 1))lsum[rt] += lsum[rt << 1 | 1];//如果事实上区间的左子区间全部空闲则左端点开头的最长长度还可以
+	//加上右子区间的左端点开头的最长长度
+	if (rsum[rt] == (m >> 1))  rsum[rt] += rsum[rt << 1];//类似上一行
+	sum[rt] = max(max(sum[rt << 1], sum[rt << 1 | 1]), lsum[rt << 1 | 1] + rsum[rt << 1]);
+	//这个区间内的最大空闲连续长度有可能来自左子区间，右子区间，还有可能时左子区间右端点结尾的最长长度加上右子区间
+	//左端点开头的最长长度
+}
+
+void down(int rt, int m)
+{
+	if (lazy[rt] != INF)
+	{
+		lazy[rt << 1] = lazy[rt << 1 | 1] = lazy[rt];
+		sum[rt << 1] = lsum[rt << 1] = rsum[rt << 1] = lazy[rt] * (m - (m >> 1));
+		sum[rt << 1 | 1] = lsum[rt << 1 | 1] = rsum[rt << 1 | 1] = lazy[rt] * (m >> 1);
+		lazy[rt] = INF;
+	}
+}
+void update(int ql, int qr, int val, int l, int r, int rt)
+{
+	if (ql <= l&&qr >= r)
+	{
+		sum[rt] = lsum[rt] = rsum[rt] = val ? (r - l + 1) : 0;
+		lazy[rt] = val;
+		return;
+	}
+	down(rt, r - l + 1);
+	int mid = (r + l) >> 1;
+	if (ql <= mid)update(ql, qr, val, l, mid, rt << 1);
+	if (qr>mid)update(ql, qr, val, mid + 1, r, rt << 1 | 1);
+	up(rt, r - l + 1);
+}
+void build(int l, int r, int rt)
+{
+	sum[rt] = lsum[rt] = rsum[rt] = r - l + 1;// 开始时所有区间都是空的,长度都是区间的长度，用1表示某个位置被占，0为空闲
+	lazy[rt] = INF;
+	if (l == r)return;
+	int mid = (r + l) >> 1;
+	build(l, mid, rt << 1);
+	build(mid + 1, r, rt << 1 | 1);
+}
+
+int query(int q, int l, int r, int rt)
+{
+	if (l == r)return l;
+	down(rt, r - l + 1);
+	int mid = (r + l) >> 1;
+	if (sum[rt << 1] >= q)return query(q, l, mid, rt << 1);
+	/* 当前区间的左子区间内
+	能形成的连续空房长度能满足要求就去左子区间继续递归查找
+	不行再看当前区间按中间值分成的左右子区间中
+	如果左子区间的以左子区间的右端点（也就是mid）为终点的连续房间长度加上
+	右子区间的以右子区间左端点（也就是mid+1)为起点的连续房间长度满足要求
+
+	再不行就从右子区间继续递归找
+	*/
+	else if (rsum[rt << 1] + lsum[rt << 1 | 1] >= q) return mid - rsum[rt << 1] + 1;
+	return query(q, mid + 1, r, rt << 1 | 1);
+}
+
+int main()
+{
+	int a, b, c;
+	while (scanf("%d%d", &N, &M) != EOF)
+	{
+		build(1, N, 1);
+		for (int i = 0;i<M;i++)
+		{
+			scanf("%d", &a);
+			if (a == 1)
+			{
+				scanf("%d", &b);
+				if (sum[1]<b)printf("0\n"); //如果根节点1控制的区间1-N里最大连续长度都小于要求的b，就输出0
+				else
+				{
+					int pos = query(b, 1, N, 1);//先找到能安排这连续b个房间的最小的号
+					printf("%d\n", pos);
+					update(pos, pos + b - 1, 0, 1, N, 1);//从最小的号码开始向后b个赋值为0表示被占，1时表示为空
+				}
+			}
+			else
+			{
+				scanf("%d%d", &b, &c);
+				update(b, b + c - 1, 1, 1, N, 1);
+			}
+		}
+	}
+	return 0;
+}
+

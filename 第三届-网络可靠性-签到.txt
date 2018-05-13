@@ -1,0 +1,46 @@
+
+/*
+题目给出的每组数据都是一个最小生成树
+即保证了N个点和N-1条边使得每个点都至少与另外一个点相连
+遍历所有点看连接到这个点边数为1的点有几个
+对这些两两之间加一个边就能保证所有点都至少两条出边
+*/
+#include <iostream>
+#include <stdio.h>
+#include <algorithm>
+#include <vector>
+#include <string.h>
+#include <string>
+#include <map>
+#include <set>
+#include <queue>
+#include <functional>
+#include <string>
+#define maxn 100010
+const double  INF = 1234123412;
+#define ll unsigned long long
+using namespace std;
+int N, M, K, T, S;
+
+int qq[10010];
+int main()
+{
+    int a,b;
+    while(scanf("%d",&N)!=EOF)
+    {
+        memset(qq,0,sizeof(qq));
+        for(int i=1;i<N;i++)
+        {
+            scanf("%d%d",&a,&b);
+            qq[a]++;
+            qq[b]++;
+        }
+        int jishu=0;
+        for(int i=1;i<=N;i++)
+        {
+            if(qq[i]<=1)jishu++;
+        }
+        printf("%d\n",(jishu+1)/2);
+    }
+	return 0;
+}

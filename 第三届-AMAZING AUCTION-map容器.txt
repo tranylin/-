@@ -1,0 +1,58 @@
+#include<cstdio>
+#include <algorithm>
+#include <string>
+#include <string.h>
+#include <map>
+#include<iostream>
+using namespace std;
+#define ll long long
+#define INF 12341234
+int K,E,N,M,T;
+
+int vis[1010];//记录这个价格出现几次
+int main()
+{
+    string s;
+    int x;
+    while(cin>>N>>M)
+    {
+        memset(vis,0,sizeof(vis));
+        map<int,string> qwq; //记录这个价格第一次是谁出的
+        for(int i=1;i<=M;i++)
+        {
+            cin>>s>>x;
+            if(qwq.count(x)==0)qwq[x]=s;
+            vis[x]++;
+        }
+        bool sin=false;
+        int ans=12341234;
+        int cishu=12341234;
+        for(int i=1;i<=1010;i++)
+        {
+            if(vis[i]==1)
+            {
+                sin=true;
+                ans=i;break;
+            }
+        }
+        if(sin==false)//  说明出现的价格都被至少两个人出了，选被最少人次出的那个价格，如果最少人次的有好几个价格，选最低的
+        {
+            for(int i=1;i<=1010;i++)
+            {
+                if(vis[i]>0)
+                {
+                    if(vis[i]<cishu)
+                    {
+                        ans=i;
+                        cishu=vis[i];
+                    }
+                }
+            }
+        }
+
+        cout<<"The winner is "<<qwq[ans]<<endl;
+        cout<<"The price is "<<ans<<endl;
+    }
+    return 0;
+}
+

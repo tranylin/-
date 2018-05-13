@@ -1,0 +1,60 @@
+#include<cstdio>
+#include <algorithm>
+#include <string>
+#include <string.h>
+#include<iostream>
+using namespace std;
+#define ll long long
+#define INF 12341234
+int K,E,N,M,T;
+struct data
+{
+    ll x;
+    ll sum;
+    ll price;
+};
+int need;
+struct data qq[1010];
+
+bool com(struct data a,struct data b)
+{
+    return a.price<b.price;
+}
+int main()
+{
+    scanf("%d",&T);
+    while(T--)
+    {
+        scanf("%d%d%d",&K,&E,&N);
+        for(int i=1;i<=N;i++)
+        {
+            scanf("%lld%lld%lld",&qq[i].x,&qq[i].sum,&qq[i].price);
+            qq[i].price+=E-qq[i].x;
+        }
+        sort(qq+1,qq+N+1,com);
+        need=K;
+        ll ans=0;
+        for(int i=1;i<=N;i++)
+        {
+            if(need<=0)break;
+            if(qq[i].sum>=need)
+            {
+                ans+=need*qq[i].price;
+                need=0;
+            }
+            else
+            {
+                ans+=qq[i].sum*qq[i].price;
+                need-=qq[i].sum;
+            }
+        }
+        printf("%lld\n",ans);
+    }
+    return 0;
+}
+/*
+每个商店用一个结构体存，这个商店内的商品的价格定义为它的单价加上它到目的地的距离，因为路途中从坐标i到坐标j的花费的定义就是
+在i的时候已得到的商品数量乘以路途距离也即j-i，那对于某个商店内的单个物品到终点就需要的费用是它的单价加上它到目的地的距离，
+最后排序后找单个费用最小的前K个
+
+*/

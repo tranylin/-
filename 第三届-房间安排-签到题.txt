@@ -1,0 +1,42 @@
+#include <iostream>
+#include <stdio.h>
+#include <algorithm>
+#include <vector>
+#include <string.h>
+#include <string>
+#include <map>
+#include <set>
+#include <queue>
+#include <functional>
+#include <string>
+#define maxn 100010
+const double  INF = 1234123412;
+#define ll long long
+using namespace std;
+int N, M, K, T, S;
+
+int qq[201];
+int ans;
+int num,sta,len;
+int main()
+{
+	scanf("%d", &T);
+	while (T--)
+	{
+	    memset(qq,0,sizeof(qq));
+	    ans=0;
+	    scanf("%d",&N);
+	    for(int i=0;i<N;i++)
+        {
+            scanf("%d%d%d",&num,&sta,&len);
+            for(int j=sta;j<sta+len;j++)
+                qq[j]+=num;
+        }
+        for(int i=1;i<201;i++)
+        {
+            ans=max(ans,qq[i]);
+        }
+		printf("%d\n",ans);
+	}
+	return 0;
+}
